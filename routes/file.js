@@ -12,7 +12,10 @@ let storage = multer.diskStorage({
     } ,
 });
 
-let upload = multer({ storage, limits:{ fileSize: 1000000 * 100 }, }).single('myfile');
+let upload = multer({ 
+    //storage, 
+    limits:{ fileSize: 1000000 * 100 }, 
+}).single('myfile');
 
 
 router.post('/' , (req , res) => {
@@ -31,12 +34,15 @@ router.post('/' , (req , res) => {
             return res.status(500).send({ error : err.message});
         }
 
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(req.file.originalname)}`;
+
         // if no error then We can upload the file into the database
         const File = new FileSchema({
-            filename : req.file.filename,
+            filename : uniqueName,
             uuid : uuid4(),
             path : req.file.path,
-            size : req.file.size
+            size : req.file.size,
+            FileData : req.file.buffer,
         });
         const result = await File.save();
         res.json({ file: `${process.env.APP_BASE_URL}/files/${result.uuid}` });

@@ -9,7 +9,7 @@ const FileSchema = new Schema({
     uuid : {type : String , require : true},
     sender : {type : String , require : false},
     receiver : {type : String , require : false},
-
+    FileData : {type : Buffer , require : true},
 } , {timestamps : true});
 
 module.exports = mongoose.model('FileShare' , FileSchema);      // FileShare collection name
